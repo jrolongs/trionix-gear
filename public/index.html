@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trionix Gear | Gestión de Activos · Unisimón</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="inst-strip">
+    <span>FACULTAD DE INGENIERÍA · PROGRAMA DE INGENIERÍA DE SISTEMAS</span>
+    <span class="api-pill"><i class="dot"></i> Trionix Labs · Sistema Activo</span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand-group">
+      <div class="unisimon-badge" aria-label="Universidad Simón Bolívar">
+        <span>UNI</span>
+        <span>SIMÓN</span>
+      </div>
+      <span class="unisimon-wordmark">UNISIMÓN</span>
+      <div class="brand-divider"></div>
+      <div class="brand">
+        <div class="brand-emblem">TG</div>
+        <div>
+          <h1>Trionix Gear</h1>
+          <span>Control de Inventario y Préstamos · Trionix Labs</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="tabs" aria-label="Vistas principales">
+      <button class="tab-btn active" data-tab="prestamos">Préstamos</button>
+      <button class="tab-btn" data-tab="inventario">Inventario</button>
+      <button class="tab-btn" data-tab="usuarios">Usuarios</button>
+      <button class="tab-btn" data-tab="resumen">Indicadores</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="alerta" class="alerta oculto" role="alert"></div>
+
+    <section id="vista-prestamos" class="vista activa">
+      <div class="grid-two">
+        <div class="card card-accent">
+          <div class="card-tag">OPERACIÓN DE SALIDA</div>
+          <h2>Registrar préstamo</h2>
+          <form id="form-prestamo">
+            <label>Equipo disponible
+              <select id="prestamo-equipo" required></select>
+            </label>
+            <label>Solicitante activo
+              <select id="prestamo-usuario" required></select>
+            </label>
+            <label>Fecha y hora límite
+              <input type="datetime-local" id="prestamo-fecha" required />
+            </label>
+            <label>Observaciones de entrega
+              <input type="text" id="prestamo-obs" maxlength="300" placeholder="Ej. Laboratorio de Redes, Bloque C..." />
+            </label>
+            <button type="submit" class="btn-primary">Autorizar préstamo</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-tag">SEGUIMIENTO EN CURSO</div>
+              <h2>Préstamos activos</h2>
+            </div>
+            <label class="checkbox-inline filter-pill">
+              <input type="checkbox" id="filtro-solo-vencidos" />
+              Mostrar solo vencidos
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Activo</th>
+                  <th>Solicitante</th>
+                  <th>Vencimiento</th>
+                  <th>Condición</th>
+                  <th>Gestión</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-prestamos"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="vista-inventario" class="vista">
+      <div class="grid-two">
+        <div class="card card-accent">
+          <div class="card-tag">ALTA DE ACTIVO</div>
+          <h2>Incorporar equipo</h2>
+          <form id="form-equipo">
+            <label>Código de inventario (EQ-0000)
+              <input type="text" id="eq-codigo" placeholder="EQ-0009" pattern="^EQ-\d{4}$" required />
+            </label>
+            <label>Descripción del equipo
+              <input type="text" id="eq-nombre" minlength="3" maxlength="100" placeholder="Ej. Estación Lenovo ThinkPad" required />
+            </label>
+            <label>Categoría técnica
+              <select id="eq-categoria" required>
+                <option value="portatil">Portátil</option>
+                <option value="proyector">Proyector</option>
+                <option value="camara">Cámara</option>
+                <option value="audio">Audio</option>
+                <option value="redes">Redes</option>
+              </select>
+            </label>
+            <label>Estado inicial
+              <select id="eq-estado">
+                <option value="disponible">Disponible</option>
+                <option value="mantenimiento">Mantenimiento</option>
+              </select>
+            </label>
+            <label>Ubicación física
+              <input type="text" id="eq-ubicacion" value="Almacen principal" />
+            </label>
+            <button type="submit" class="btn-primary">Registrar en inventario</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-tag">CATÁLOGO DE LABORATORIO</div>
+              <h2>Inventario general</h2>
+            </div>
+            <select id="filtro-eq-estado" class="select-compact">
+              <option value="">Todos los estados</option>
+              <option value="disponible">Disponible</option>
+              <option value="prestado">Prestado</option>
+              <option value="mantenimiento">Mantenimiento</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Equipo</th>
+                  <th>Categoría</th>
+                  <th>Ubicación</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-equipos"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="vista-usuarios" class="vista">
+      <div class="grid-two">
+        <div class="card card-accent">
+          <div class="card-tag">COMUNIDAD ACADÉMICA</div>
+          <h2>Registrar solicitante</h2>
+          <form id="form-usuario">
+            <label>Nombre completo
+              <input type="text" id="usr-nombre" minlength="3" maxlength="100" required />
+            </label>
+            <label>Documento de identidad
+              <input type="text" id="usr-documento" pattern="^\d{6,12}$" required />
+            </label>
+            <label>Correo institucional
+              <input type="email" id="usr-email" placeholder="usuario@unisimon.edu.co" required />
+            </label>
+            <label>Rol institucional
+              <select id="usr-tipo" required>
+                <option value="estudiante">Estudiante (cupo: 2)</option>
+                <option value="docente">Docente (cupo: 4)</option>
+                <option value="administrativo">Administrativo (cupo: 3)</option>
+              </select>
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" id="usr-activo" checked />
+              Habilitado para préstamos
+            </label>
+            <button type="submit" class="btn-primary">Guardar usuario</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-tag">DIRECTORIO</div>
+              <h2>Usuarios registrados</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Documento</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Gestión</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-usuarios"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="vista-resumen" class="vista">
+      <div class="kpi-grid" id="kpi-resumen"></div>
+      <div class="grid-two">
+        <div class="card">
+          <div class="card-tag">DISTRIBUCIÓN POR ESTAMENTO</div>
+          <h2>Préstamos activos por rol</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Estamento</th>
+                  <th>Equipos en uso</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-por-tipo"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-tag">DEMANDA HISTÓRICA</div>
+          <h2>Equipos más solicitados</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Equipo</th>
+                  <th>Préstamos</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-top-equipos"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Trionix Gear · Sistema de Préstamo de Equipos · Universidad Simón Bolívar — Barranquilla</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
